@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Manabu Niseki"]
   spec.email         = ["manabu.niseki@gmail.com"]
 
-  spec.summary       = "Website directory & file scanner"
-  spec.description   = "Website directory & file scanner"
+  spec.summary       = "Yet another dirbuster tool"
+  spec.description   = "Yet another dirbuster tool"
   spec.homepage      = "https://github.com/ninoseki/tansaku"
   spec.license       = "MIT"
 
