@@ -1,5 +1,7 @@
 # Tansaku
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7bbcf1b8b0e745409c33bc35ae9e18a0)](https://app.codacy.com/app/ninoseki/tansaku?utm_source=github.com&utm_medium=referral&utm_content=ninoseki/tansaku&utm_campaign=Badge_Grade_Dashboard)
+
 Tansaku is a yet another dirbuster tool.
 
 ## Installation
