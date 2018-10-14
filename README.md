@@ -37,7 +37,7 @@ Usage:
   tansaku crawl URL
 
 Options:
-  [--additional-list=ADDITIONAL_LIST]  # Path to the additonal crawling pats file
+  [--additional-list=ADDITIONAL_LIST]  # Path to the file which includes additonal paths to crawl
   [--threads=N]                        # Number of threads to use
   [--user-agent=USER_AGENT]            # User-Agent parameter to use
 
