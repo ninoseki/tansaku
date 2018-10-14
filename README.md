@@ -1,8 +1,8 @@
 # Tansaku
 
 [![Build Status](https://travis-ci.org/ninoseki/tansaku.svg?branch=master)](https://travis-ci.org/ninoseki/tansaku)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/729ef2e3fcf04bb89a69a989207ec094)](https://www.codacy.com/app/ninoseki/tansaku)
-[![Coverage Status](https://coveralls.io/repos/github/ninoseki/tansaku/badge.svg?branch=vmaster)](https://coveralls.io/github/ninoseki/tansaku?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b8c176423480493182a6d52e56f6fd35)](https://www.codacy.com/app/ninoseki/tansaku)
+[![Coverage Status](https://coveralls.io/repos/github/ninoseki/tansaku/badge.svg?branch=master)](https://coveralls.io/github/ninoseki/tansaku?branch=master)
 
 Tansaku is a yet another dirbuster tool.
 
