@@ -6,6 +6,13 @@
 
 Tansaku is a yet another dirbuster tool.
 
+## Features and ToDo(s)
+
+- [x] Custom path list to crawl
+- [x] Custom User-Agent
+- [x] Threading
+- [ ] Crawl by type (e.g. by admin, by env, by login, etc.)
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -51,6 +58,10 @@ crawler = Tansaku::Crawler("http://localhost")
 resutls = crawler.crawl
 p results
 ```
+
+## Default paths to crawl
+
+See [/lib/tansaku/fixtures/paths.txt](https://github.com/ninoseki/tansaku/blob/master/lib/tansaku/fixtures/paths.txt).
 
 ## Alternatives
 
