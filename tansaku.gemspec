@@ -31,6 +31,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.8"
   spec.add_development_dependency "webmock", "~> 3.4"
 
+  spec.add_dependency "parallel", "~> 1.12"
   spec.add_dependency "thor", "~> 0.19"
-  spec.add_dependency "thread", "~> 0.2.2"
 end
