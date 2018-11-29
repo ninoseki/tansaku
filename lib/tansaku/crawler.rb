@@ -2,7 +2,7 @@
 
 require "cgi"
 require "net/http"
-require "thread/pool"
+require "parallel"
 require "uri"
 
 module Tansaku
@@ -31,16 +31,10 @@ module Tansaku
     end
 
     def crawl
-      pool = Thread.pool(threads)
-      results = []
-      urls.each do |url|
-        pool.process do
-          results << url if online?(url)
-        end
+      results = Parallel.map(urls, in_threads: threads) do |url|
+        url if online?(url)
       end
-      pool.shutdown
-
-      results
+      results.compact
     end
 
     private
