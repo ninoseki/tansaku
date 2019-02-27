@@ -26,7 +26,7 @@ module Tansaku
     end
 
     def online?(url)
-      res = get(url)
+      res = head(url)
       [200, 401, 302].include? res.code.to_i
     end
 
@@ -65,10 +65,10 @@ module Tansaku
       Net::HTTP.start(base_uri.host, base_uri.port) { |http| http.request(req) }
     end
 
-    def get(url)
-      get = Net::HTTP::Get.new(url)
-      get["User-Agent"] = user_agent
-      request(get)
+    def head(url)
+      head = Net::HTTP::Head.new(url)
+      head["User-Agent"] = user_agent
+      request(head)
     end
   end
 end
