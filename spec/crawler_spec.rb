@@ -13,12 +13,14 @@ RSpec.describe Tansaku::Crawler do
           expect(subject.online?("/")).to be false
         end
       end
+
       context "when accessing to /admin.asp" do
         it "should return true" do
           expect(subject.online?("/admin.asp")).to be true
         end
       end
     end
+
     describe "#crawl" do
       it "should return an Array" do
         results = subject.crawl
