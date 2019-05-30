@@ -20,10 +20,6 @@ module Tansaku
       types.map { |type| get_by_type(type) }.flatten
     end
 
-    def lists
-      @lists = Dir.glob(File.expand_path("./lists/*.txt", __dir__))
-    end
-
     def types
       @types = Dir.glob(File.expand_path("./lists/*.txt", __dir__)).map do |path|
         File.basename(path).split(".").first
