@@ -12,6 +12,7 @@ RSpec.shared_context "http_server" do
         Logger: WEBrick::Log.new(File.open(File::NULL, "w")),
         AccessLog: []
       )
+
       http.mount_proc("/admin.asp") do |_, res|
         body = "test"
 
@@ -20,6 +21,7 @@ RSpec.shared_context "http_server" do
         res.content_type = 'text/plain'
         res.body = body
       end
+
       http.mount_proc("/wowee") do |_, res|
         body = "wowee"
 
@@ -44,6 +46,7 @@ RSpec.shared_context "http_server" do
     @server = server
     @server.start
   }
+
   after(:all) { @server.stop }
 
   let(:host) { "0.0.0.0" }
