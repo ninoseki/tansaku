@@ -11,23 +11,13 @@ Tansaku is a yet another dirbuster tool.
 - [x] Custom path list to crawl
 - [x] Custom User-Agent
 - [x] Threading
-- [ ] Crawl by type (e.g. by admin, by env, by login, etc.)
+- [x] Crawl by type (admin, backup, database, etc, log and all)
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'tansaku'
+```bash
+gem install tansaku
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install tansaku
 
 ## Usage
 
@@ -44,6 +34,8 @@ Usage:
   tansaku crawl URL
 
 Options:
+  [--type=TYPE]                        # Type of a list to crawl (admin, backup, database, etc, log or all)
+                                       # Default: all
   [--additional-list=ADDITIONAL_LIST]  # Path to the file which includes additonal paths to crawl
   [--threads=N]                        # Number of threads to use
   [--user-agent=USER_AGENT]            # User-Agent parameter to use
@@ -59,9 +51,9 @@ resutls = crawler.crawl
 p results
 ```
 
-## Default paths to crawl
+## Defined paths to crawl
 
-See [/lib/tansaku/fixtures/paths.txt](https://github.com/ninoseki/tansaku/blob/master/lib/tansaku/fixtures/paths.txt).
+See [/lib/tansaku/lists/](https://github.com/ninoseki/tansaku/blob/master/lib/tansaku/lists/).
 
 ## Alternatives
 

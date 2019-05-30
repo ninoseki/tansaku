@@ -6,8 +6,7 @@ RSpec.describe Tansaku::Crawler do
   let(:target_url) { "http://#{host}:#{port}" }
 
   before do
-    path = File.expand_path("./../lib/tansaku/fixtures/paths.txt", __dir__)
-    allow(File).to receive(:readlines).with(path).and_return(["admin.asp"])
+    allow(Tansaku::Path).to receive(:get_by_type).with("all").and_return(["admin.asp"])
   end
 
   context "when not given options" do
