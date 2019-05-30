@@ -10,9 +10,9 @@ module Tansaku
     DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393"
 
     attr_reader :base_uri
-    attr_reader :additional_list, :threads, :user_agent
+    attr_reader :additional_list, :threads, :user_agent, :type
 
-    def initialize(base_uri, additional_list: nil, threads: 10, user_agent: DEFAULT_USER_AGENT)
+    def initialize(base_uri, additional_list: nil, threads: 10, user_agent: DEFAULT_USER_AGENT, type: "all")
       @base_uri = URI.parse(base_uri)
       raise ArgumentError, "Invalid URI" unless valid_uri?
 
@@ -23,6 +23,8 @@ module Tansaku
 
       @threads = threads
       @user_agent = user_agent
+
+      @type = type
     end
 
     def online?(url)
@@ -33,6 +35,8 @@ module Tansaku
     def crawl
       results = Parallel.map(urls, in_threads: threads) do |url|
         url if online?(url)
+      rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => _e
+        nil
       end
       results.compact
     end
@@ -48,7 +52,7 @@ module Tansaku
     end
 
     def paths
-      paths = File.readlines(File.expand_path("./fixtures/paths.txt", __dir__))
+      paths = Path.get_by_type(type)
       paths += File.readlines(File.expand_path(additional_list, __dir__)) if additional_list
       paths.map(&:chomp).compact
     end
