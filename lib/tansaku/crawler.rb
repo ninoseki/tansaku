@@ -12,7 +12,7 @@ module Tansaku
     attr_reader :base_uri
     attr_reader :additional_list, :threads, :user_agent, :type
 
-    def initialize(base_uri, additional_list: nil, threads: 10, user_agent: DEFAULT_USER_AGENT, type: "all")
+    def initialize(base_uri, additional_list: nil, threads: Parallel.processor_count, user_agent: DEFAULT_USER_AGENT, type: "all")
       @base_uri = URI.parse(base_uri)
       raise ArgumentError, "Invalid URI" unless valid_uri?
 
