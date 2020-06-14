@@ -14,7 +14,7 @@ module Tansaku
     def crawl(url)
       params = options.compact.map { |k, v| [k.to_sym, v] }.to_h
       begin
-        crawler = Crawler.new(url, params)
+        crawler = Crawler.new(url, **params)
         results = crawler.crawl
         puts results.to_json
       rescue ArgumentError => e
