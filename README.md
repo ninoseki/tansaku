@@ -1,7 +1,7 @@
 # Tansaku
 
 [![Gem Version](https://badge.fury.io/rb/tansaku.svg)](https://badge.fury.io/rb/tansaku)
-[![Build Status](https://travis-ci.org/ninoseki/tansaku.svg?branch=master)](https://travis-ci.org/ninoseki/tansaku)
+[![Build Status](https://travis-ci.com/ninoseki/tansaku.svg?branch=master)](https://travis-ci.com/ninoseki/tansaku)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b8c176423480493182a6d52e56f6fd35)](https://www.codacy.com/app/ninoseki/tansaku)
 [![Coverage Status](https://coveralls.io/repos/github/ninoseki/tansaku/badge.svg?branch=master)](https://coveralls.io/github/ninoseki/tansaku?branch=master)
 
