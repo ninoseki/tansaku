@@ -7,12 +7,24 @@ require "uri"
 
 module Tansaku
   class Crawler
-    DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393"
+    DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
 
     attr_reader :base_uri
-    attr_reader :additional_list, :threads, :user_agent, :type
 
-    def initialize(base_uri, additional_list: nil, threads: Parallel.processor_count, user_agent: DEFAULT_USER_AGENT, type: "all")
+    attr_reader :additional_list
+    attr_reader :host
+    attr_reader :threads
+    attr_reader :type
+    attr_reader :user_agent
+
+    def initialize(
+      base_uri,
+      additional_list: nil,
+      host: nil,
+      threads: Parallel.processor_count,
+      type: "all",
+      user_agent: DEFAULT_USER_AGENT
+    )
       @base_uri = URI.parse(base_uri)
       raise ArgumentError, "Invalid URI" unless valid_uri?
 
@@ -21,10 +33,10 @@ module Tansaku
         raise ArgumentError, "Invalid path" unless valid_path?
       end
 
+      @host = host
       @threads = threads
-      @user_agent = user_agent
-
       @type = type
+      @user_agent = user_agent
     end
 
     def online?(url)
@@ -72,6 +84,8 @@ module Tansaku
     def head(url)
       head = Net::HTTP::Head.new(url)
       head["User-Agent"] = user_agent
+      head["Host"] = host unless host.nil?
+
       request(head)
     end
   end
