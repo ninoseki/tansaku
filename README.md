@@ -35,11 +35,12 @@ Usage:
   tansaku crawl URL
 
 Options:
+  [--additional-list=ADDITIONAL_LIST]  # Path to the file which includes additonal paths to crawl
+  [--host=HOST]                        # Host header to use
+  [--threads=N]                        # Number of threads to use
   [--type=TYPE]                        # Type of a list to crawl (admin, backup, database, etc, log or all)
                                        # Default: all
-  [--additional-list=ADDITIONAL_LIST]  # Path to the file which includes additonal paths to crawl
-  [--threads=N]                        # Number of threads to use
-  [--user-agent=USER_AGENT]            # User-Agent parameter to use
+  [--user-agent=USER_AGENT]            # User-Agent header to use
 
 Crawl a given URL
 ```
