@@ -12,16 +12,6 @@ RSpec.describe Tansaku::Crawler do
   context "when not given options" do
     subject { described_class.new(target_url) }
 
-    describe "#online?" do
-      it do
-        expect(subject.online?("/")).to be false
-      end
-
-      it do
-        expect(subject.online?("/admin.asp")).to be true
-      end
-    end
-
     describe "#crawl" do
       it "returns an Array" do
         results = subject.crawl

@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
+require "async/http/internet"
+require "async"
+require "async/barrier"
+require "async/semaphore"
 require "cgi"
-require "net/http"
-require "parallel"
+require "etc"
 require "uri"
+
+require "tansaku/monkey_patch"
 
 module Tansaku
   class Crawler
@@ -21,7 +26,7 @@ module Tansaku
       base_uri,
       additional_list: nil,
       host: nil,
-      threads: Parallel.processor_count,
+      threads: Etc.nprocessors,
       type: "all",
       user_agent: DEFAULT_USER_AGENT
     )
@@ -39,21 +44,33 @@ module Tansaku
       @user_agent = user_agent
     end
 
-    def online?(url)
-      res = head(url)
-      [200, 401, 302].include? res.code.to_i
-    end
-
     def crawl
-      results = Parallel.map(urls, in_threads: threads) do |url|
-        url if online?(url)
-      rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => _e
-        nil
+      results = []
+      Async do
+        barrier = Async::Barrier.new
+        semaphore = Async::Semaphore.new(threads, parent: barrier)
+        internet = Async::HTTP::Internet.new
+
+        paths.each do |path|
+          semaphore.async do
+            url = url_for(path)
+            res = internet.head(url, default_request_headers)
+
+            results << url if online?(res.status)
+          rescue Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError, OpenSSL::SSL::SSLError, Async::TimeoutError
+            next
+          end
+        end
+        barrier.wait
       end
       results.compact
     end
 
     private
+
+    def online?(status)
+      [200, 401, 302].include? status.to_i
+    end
 
     def valid_uri?
       ["http", "https"].include? base_uri.scheme
@@ -77,16 +94,8 @@ module Tansaku
       paths.map { |path| url_for path }
     end
 
-    def request(req)
-      Net::HTTP.start(base_uri.host, base_uri.port) { |http| http.request(req) }
-    end
-
-    def head(url)
-      head = Net::HTTP::Head.new(url)
-      head["User-Agent"] = user_agent
-      head["Host"] = host unless host.nil?
-
-      request(head)
+    def default_request_headers
+      @default_request_headers ||= { "host" => host, "user-agent" => user_agent }.compact
     end
   end
 end
