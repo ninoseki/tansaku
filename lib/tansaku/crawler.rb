@@ -18,7 +18,7 @@ module Tansaku
 
     attr_reader :additional_list
     attr_reader :host
-    attr_reader :threads
+    attr_reader :max_concurrent_requests
     attr_reader :type
     attr_reader :user_agent
 
@@ -26,7 +26,7 @@ module Tansaku
       base_uri,
       additional_list: nil,
       host: nil,
-      threads: Etc.nprocessors,
+      max_concurrent_requests: Etc.nprocessors,
       type: "all",
       user_agent: DEFAULT_USER_AGENT
     )
@@ -39,7 +39,7 @@ module Tansaku
       end
 
       @host = host
-      @threads = threads
+      @max_concurrent_requests = max_concurrent_requests
       @type = type
       @user_agent = user_agent
     end
@@ -48,7 +48,7 @@ module Tansaku
       results = []
       Async do
         barrier = Async::Barrier.new
-        semaphore = Async::Semaphore.new(threads, parent: barrier)
+        semaphore = Async::Semaphore.new(max_concurrent_requests, parent: barrier)
         internet = Async::HTTP::Internet.new
 
         paths.each do |path|

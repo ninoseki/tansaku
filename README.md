@@ -37,7 +37,7 @@ Usage:
 Options:
   [--additional-list=ADDITIONAL_LIST]  # Path to the file which includes additonal paths to crawl
   [--host=HOST]                        # Host header to use
-  [--threads=N]                        # Number of threads to use
+  [--max-concurrent-requests=N]        # Number of concurrent requests to use
   [--type=TYPE]                        # Type of a list to crawl (admin, backup, database, etc, log or all)
                                        # Default: all
   [--user-agent=USER_AGENT]            # User-Agent header to use
