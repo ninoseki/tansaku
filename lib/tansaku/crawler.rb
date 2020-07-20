@@ -69,7 +69,7 @@ module Tansaku
     private
 
     def online?(status)
-      [200, 401, 302].include? status.to_i
+      [200, 204, 301, 302, 307, 401, 403].include? status.to_i
     end
 
     def valid_uri?
