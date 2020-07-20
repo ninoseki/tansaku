@@ -45,7 +45,7 @@ module Tansaku
     end
 
     def crawl
-      results = []
+      results = {}
       Async do
         barrier = Async::Barrier.new
         semaphore = Async::Semaphore.new(max_concurrent_requests, parent: barrier)
@@ -56,20 +56,20 @@ module Tansaku
             url = url_for(path)
             res = internet.head(url, default_request_headers)
 
-            results << url if online?(res.status)
+            results[url] = res.status if online?(res.status)
           rescue Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError, OpenSSL::SSL::SSLError, Async::TimeoutError
             next
           end
         end
         barrier.wait
       end
-      results.compact
+      results
     end
 
     private
 
     def online?(status)
-      [200, 401, 302].include? status.to_i
+      [200, 204, 301, 302, 307, 401, 403].include? status.to_i
     end
 
     def valid_uri?

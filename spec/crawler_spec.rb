@@ -15,8 +15,9 @@ RSpec.describe Tansaku::Crawler do
     describe "#crawl" do
       it "returns an Array" do
         results = subject.crawl
-        expect(results.length).to eq 1
-        expect(results.first).to eq("#{target_url}/admin.asp")
+        expect(results.keys.length).to eq 1
+        expect(results.keys.first).to eq("#{target_url}/admin.asp")
+        expect(results.values.first).to eq(200)
       end
     end
   end
@@ -34,7 +35,7 @@ RSpec.describe Tansaku::Crawler do
     describe "#crawl" do
       it do
         results = subject.crawl
-        expect(results.length).to eq 2
+        expect(results.keys.length).to eq 2
       end
     end
   end
