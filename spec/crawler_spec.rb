@@ -30,7 +30,7 @@ RSpec.describe Tansaku::Crawler do
     end
   end
 
-  context "when given options" do
+  context "when given additional list option" do
     subject {
       described_class.new(target_url, additional_list: File.expand_path("./fixtures/sample.txt", __dir__))
     }
@@ -44,6 +44,19 @@ RSpec.describe Tansaku::Crawler do
       it do
         results = subject.crawl
         expect(results.keys.length).to eq 2
+      end
+    end
+  end
+
+  context "when given headers option" do
+    subject {
+      described_class.new(target_url, headers: { foo: "bar" })
+    }
+
+    describe "#crawl" do
+      it do
+        results = subject.crawl
+        expect(results.keys.length).to eq 1
       end
     end
   end
