@@ -22,5 +22,7 @@ module Tansaku
         puts e
       end
     end
+
+    default_command :crawl
   end
 end
