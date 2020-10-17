@@ -13,8 +13,8 @@ RSpec.shared_context "http_server" do
         AccessLog: []
       )
 
-      http.mount_proc("/admin.asp") do |_, res|
-        body = "test"
+      http.mount_proc("/admin.asp") do |req, res|
+        body = req.raw_header.to_s + req.body.to_s
 
         res.status = 200
         res.content_length = body.size
@@ -35,6 +35,7 @@ RSpec.shared_context "http_server" do
       trap(:TERM) { http.shutdown }
       http.start
     end
+
     Glint::Server.info[:http_server] = {
       host: "0.0.0.0",
       port: server.port

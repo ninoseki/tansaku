@@ -17,6 +17,7 @@ module Tansaku
     attr_reader :base_uri
 
     attr_reader :additional_list
+    attr_reader :headers
     attr_reader :host
     attr_reader :max_concurrent_requests
     attr_reader :type
@@ -25,6 +26,7 @@ module Tansaku
     def initialize(
       base_uri,
       additional_list: nil,
+      headers: {},
       host: nil,
       max_concurrent_requests: Etc.nprocessors,
       type: "all",
@@ -38,6 +40,7 @@ module Tansaku
         raise ArgumentError, "Invalid path" unless valid_path?
       end
 
+      @headers = headers
       @host = host
       @max_concurrent_requests = max_concurrent_requests
       @type = type
@@ -95,7 +98,7 @@ module Tansaku
     end
 
     def default_request_headers
-      @default_request_headers ||= { "host" => host, "user-agent" => user_agent }.compact
+      @default_request_headers ||= headers.merge({ "host" => host, "user-agent" => user_agent }.compact)
     end
   end
 end
