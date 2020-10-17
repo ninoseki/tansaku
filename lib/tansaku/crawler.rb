@@ -26,7 +26,7 @@ module Tansaku
       base_uri,
       additional_list: nil,
       host: nil,
-      max_concurrent_requests: Etc.nprocessors,
+      max_concurrent_requests: nil,
       type: "all",
       user_agent: DEFAULT_USER_AGENT
     )
@@ -39,7 +39,7 @@ module Tansaku
       end
 
       @host = host
-      @max_concurrent_requests = max_concurrent_requests
+      @max_concurrent_requests = max_concurrent_requests || Etc.nprocessors * 8
       @type = type
       @user_agent = user_agent
     end

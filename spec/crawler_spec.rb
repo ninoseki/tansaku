@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require "etc"
+
 RSpec.describe Tansaku::Crawler do
+  subject { described_class.new(target_url) }
+
   include_context "http_server"
 
   let(:target_url) { "http://#{host}:#{port}" }
@@ -9,9 +13,13 @@ RSpec.describe Tansaku::Crawler do
     allow(Tansaku::Path).to receive(:get_by_type).with("all").and_return(["admin.asp"])
   end
 
-  context "when not given options" do
-    subject { described_class.new(target_url) }
+  describe "#max_concurrent_requests" do
+    it do
+      expect(subject.max_concurrent_requests).to eq(Etc.nprocessors * 8)
+    end
+  end
 
+  context "when not given options" do
     describe "#crawl" do
       it "returns an Array" do
         results = subject.crawl
