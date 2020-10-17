@@ -25,5 +25,11 @@ module Tansaku
     end
 
     default_command :crawl
+
+    class << self
+      def exit_on_failure?
+        true
+      end
+    end
   end
 end
