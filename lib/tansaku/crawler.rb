@@ -77,7 +77,7 @@ module Tansaku
     def paths
       paths = Path.get_by_type(type)
       paths += File.readlines(File.expand_path(additional_list, __dir__)) if additional_list
-      paths.map(&:chomp).compact
+      paths.filter_map(&:chomp)
     end
 
     def url_for(path)
