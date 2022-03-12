@@ -45,8 +45,12 @@ module Tansaku
           semaphore.async do
             url = url_for(path)
             res = internet.head(url, request_headers)
+            if online?(res.status)
+              log = [url, res.status].join(",")
+              Tansaku.logger.info(log)
 
-            results[url] = res.status if online?(res.status)
+              results[url] = res.status
+            end
           rescue Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError, OpenSSL::SSL::SSLError, Async::TimeoutError
             next
           end
