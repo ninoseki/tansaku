@@ -14,37 +14,24 @@ module Tansaku
   class Crawler
     DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
 
-    attr_reader :base_uri
-
-    attr_reader :additional_list
-    attr_reader :headers
-    attr_reader :host
-    attr_reader :max_concurrent_requests
-    attr_reader :type
-    attr_reader :user_agent
+    attr_reader :base_uri, :additional_list, :max_concurrent_requests, :type
 
     def initialize(
       base_uri,
       additional_list: nil,
       headers: {},
-      host: nil,
       max_concurrent_requests: nil,
-      type: "all",
-      user_agent: DEFAULT_USER_AGENT
+      type: "all"
     )
       @base_uri = URI.parse(base_uri)
       raise ArgumentError, "Invalid URI" unless valid_uri?
 
       @additional_list = additional_list
-      unless additional_list.nil?
-        raise ArgumentError, "Invalid path" unless valid_path?
-      end
+      raise ArgumentError, "Invalid path" if !additional_list.nil? && !valid_path?
 
       @headers = headers
-      @host = host
-      @max_concurrent_requests = max_concurrent_requests || Etc.nprocessors * 8
+      @max_concurrent_requests = max_concurrent_requests || (Etc.nprocessors * 8)
       @type = type
-      @user_agent = user_agent
     end
 
     def crawl
@@ -57,7 +44,7 @@ module Tansaku
         paths.each do |path|
           semaphore.async do
             url = url_for(path)
-            res = internet.head(url, default_request_headers)
+            res = internet.head(url, request_headers)
 
             results[url] = res.status if online?(res.status)
           rescue Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError, OpenSSL::SSL::SSLError, Async::TimeoutError
@@ -97,8 +84,11 @@ module Tansaku
       paths.map { |path| url_for path }
     end
 
-    def default_request_headers
-      @default_request_headers ||= headers.merge({ "host" => host, "user-agent" => user_agent }.compact)
+    def request_headers
+      @request_headers ||= @headers.tap do |headers|
+        upcase_keys = headers.keys.map(&:downcase).map(&:to_s)
+        headers["user-agent"] = DEFAULT_USER_AGENT unless upcase_keys.include?("user-agent")
+      end.compact
     end
   end
 end
