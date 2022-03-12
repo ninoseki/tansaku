@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.11"
   spec.add_development_dependency "webmock", "~> 3.14"
+  spec.add_development_dependency "webrick", "~> 1.7"
 
   spec.add_dependency "async", "~> 1.30"
   spec.add_dependency "async-http", "~> 0.56"
