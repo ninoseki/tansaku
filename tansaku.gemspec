@@ -24,14 +24,14 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 2.1"
-  spec.add_development_dependency "coveralls", "~> 0.8"
+  spec.add_development_dependency "bundler", "~> 2.3"
+  spec.add_development_dependency "coveralls_reborn", "~> 0.24"
   spec.add_development_dependency "glint", "~> 0.1"
   spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rspec", "~> 3.9"
-  spec.add_development_dependency "webmock", "~> 3.8"
+  spec.add_development_dependency "rspec", "~> 3.11"
+  spec.add_development_dependency "webmock", "~> 3.14"
 
-  spec.add_dependency "async", "~> 1.26"
-  spec.add_dependency "async-http", "~> 0.52"
-  spec.add_dependency "thor", "~> 1.0"
+  spec.add_dependency "async", "~> 1.30"
+  spec.add_dependency "async-http", "~> 0.56"
+  spec.add_dependency "thor", "~> 1.2"
 end
