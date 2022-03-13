@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "async/http/internet"
 require "async"
 require "async/barrier"
 require "async/semaphore"
@@ -34,6 +33,9 @@ module Tansaku
     # @return [Float, nil]
     attr_reader :timeout
 
+    # @return [Boolean]
+    attr_reader :ignore_certificate_errors
+
     def initialize(
       base_uri,
       additional_list: nil,
@@ -42,6 +44,7 @@ module Tansaku
       body: nil,
       timeout: nil,
       max_concurrent_requests: nil,
+      ignore_certificate_errors: false,
       type: "all"
     )
       @base_uri = URI.parse(base_uri.downcase)
@@ -59,6 +62,9 @@ module Tansaku
       @timeout = timeout.nil? ? nil : timeout.to_f
 
       @max_concurrent_requests = max_concurrent_requests || (Etc.nprocessors * 8)
+
+      @ignore_certificate_errors = ignore_certificate_errors
+
       @type = type
     end
 
@@ -68,7 +74,7 @@ module Tansaku
       Async do |task|
         barrier = Async::Barrier.new
         semaphore = Async::Semaphore.new(max_concurrent_requests, parent: barrier)
-        internet = Async::HTTP::Internet.new
+        internet = Internet.new
 
         paths.each do |path|
           semaphore.async do
@@ -130,20 +136,32 @@ module Tansaku
       end.compact
     end
 
+    def ssl_verify_mode
+      ignore_certificate_errors ? OpenSSL::SSL::VERIFY_NONE : OpenSSL::SSL::VERIFY_PEER
+    end
+
+    def ssl_context
+      @ssl_context ||= OpenSSL::SSL::SSLContext.new.tap do |context|
+        context.set_params(verify_mode: ssl_verify_mode)
+      end
+    end
+
     #
     # Dispatch an HTTP request
     #
     # @param [Async::Task] task
-    # @param [Async::HTTP::Internet] internet
+    # @param [Tansaku::Internet] internet
     # @param [String] url
     #
     # @return [Async::HTTP::Protocol::Response]
     #
     def dispatch_http_request(task, internet, url)
-      return internet.call(method, url, request_headers, body) if timeout.nil?
+      endpoint = Async::HTTP::Endpoint.parse(url, ssl_context: ssl_context)
+
+      return internet.call(method, endpoint, request_headers, body) if timeout.nil?
 
       task.with_timeout(timeout) do
-        internet.call(method, url, request_headers, body)
+        internet.call(method, endpoint, request_headers, body)
       end
     end
   end
