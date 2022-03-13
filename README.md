@@ -2,7 +2,6 @@
 
 [![Gem Version](https://badge.fury.io/rb/tansaku.svg)](https://badge.fury.io/rb/tansaku)
 [![Build Status](https://travis-ci.com/ninoseki/tansaku.svg?branch=master)](https://travis-ci.com/ninoseki/tansaku)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b8c176423480493182a6d52e56f6fd35)](https://www.codacy.com/app/ninoseki/tansaku)
 [![Coverage Status](https://coveralls.io/repos/github/ninoseki/tansaku/badge.svg?branch=master)](https://coveralls.io/github/ninoseki/tansaku?branch=master)
 
 Tansaku is a yet another dirbuster tool.
@@ -58,8 +57,10 @@ See [/lib/tansaku/lists/](https://github.com/ninoseki/tansaku/blob/master/lib/ta
 
 ## Alternatives
 
-- [davidtavarez/weblocator](https://github.com/davidtavarez/weblocator)
-- [maurosoria/dirsearch](https://github.com/maurosoria/dirsearch)
+- [maurosoria/dirsearch](https://github.com/maurosoria/dirsearch): Web path scanner
+- [evilsocket/dirsearch](https://github.com/evilsocket/dirsearch): A Go implementation of dirsearch.
+- [davidtavarez/weblocator](https://github.com/davidtavarez/weblocator): Just a better dirbuster
+- [stefanoj3/dirstalk](https://github.com/stefanoj3/dirstalk): Modern alternative to dirbuster/dirb
 
 ## License
 
