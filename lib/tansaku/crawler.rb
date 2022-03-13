@@ -14,22 +14,44 @@ module Tansaku
   class Crawler
     DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
 
-    attr_reader :base_uri, :additional_list, :max_concurrent_requests, :type
+    # @return [String]
+    attr_reader :base_uri
+
+    attr_reader :additional_list
+
+    # @return [Integer]
+    attr_reader :max_concurrent_requests
+
+    # @return [String]
+    attr_reader :type
+
+    # @return [String]
+    attr_reader :method
+
+    # @return [String, nil]
+    attr_reader :body
 
     def initialize(
       base_uri,
       additional_list: nil,
       headers: {},
+      method: "HEAD",
+      body: nil,
       max_concurrent_requests: nil,
       type: "all"
     )
-      @base_uri = URI.parse(base_uri)
+      @base_uri = URI.parse(base_uri.downcase)
       raise ArgumentError, "Invalid URI" unless valid_uri?
 
       @additional_list = additional_list
       raise ArgumentError, "Invalid path" if !additional_list.nil? && !valid_path?
 
+      @method = method.upcase
+      raise ArgumentError, "Invalid HTTP method" unless valid_method?
+
       @headers = headers
+      @body = body
+
       @max_concurrent_requests = max_concurrent_requests || (Etc.nprocessors * 8)
       @type = type
     end
@@ -44,9 +66,11 @@ module Tansaku
         paths.each do |path|
           semaphore.async do
             url = url_for(path)
-            res = internet.head(url, request_headers)
+
+            res = internet.call(method, url, request_headers, body)
+
             if online?(res.status)
-              log = [url, res.status].join(",")
+              log = [method, url, res.status].join(",")
               Tansaku.logger.info(log)
 
               results[url] = res.status
@@ -72,6 +96,10 @@ module Tansaku
 
     def valid_path?
       File.exist?(additional_list)
+    end
+
+    def valid_method?
+      Protocol::HTTP::Methods.valid? method
     end
 
     def paths
