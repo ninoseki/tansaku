@@ -5,5 +5,14 @@ $LOAD_PATH.unshift("#{__dir__}/../lib")
 
 require "tansaku"
 
+def is_help?
+  ARGV.length == 1 && ARGV.first.casecmp("help").zero?
+end
+
 ARGV.unshift(Tansaku::CLI.default_task) unless Tansaku::CLI.all_tasks.key?(ARGV[0])
-Tansaku::CLI.start(ARGV)
+
+if is_help?
+  Tansaku::CLI.start(["help", Tansaku::CLI.default_task] )
+else
+  Tansaku::CLI.start(ARGV)
+end
