@@ -10,9 +10,9 @@ module Tansaku
     method_option :additional_list, desc: "Path to the file which includes additional paths to crawl"
     method_option :headers, type: :hash, default: {}, desc: "HTTP headers to use"
     method_option :method, type: :string, default: "HEAD", desc: "HTTP method to use"
-    method_option :body, type: :string, required: false, default: nil, desc: "HTTP reqeust body to use"
+    method_option :body, type: :string, required: false, default: nil, desc: "HTTP request body to use"
     method_option :timeout, type: :numeric, required: false, default: nil, desc: "Timeout in seconds"
-    method_option :max_concurrent_requests, type: :numeric, desc: "Number of concurrent requests to use"
+    method_option :max_concurrent_requests, type: :numeric, desc: "Max number of concurrent requests to use"
     method_option :ignore_certificate_errors, type: :boolean, default: false, desc: "Whether to ignore certificate errors or not"
     method_option :type, desc: "Type of a list to crawl (admin, backup, database, etc, log or all)", default: "all"
     def crawl(url)

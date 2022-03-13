@@ -25,21 +25,21 @@ gem install tansaku
 ### As a CLI
 
 ```sh
-$ tansaku
-Commands:
-  tansaku crawl URL       # Crawl a given URL
-  tansaku help [COMMAND]  # Describe available commands or one specific command
-
-$ tansaku help crawl
+$ tansaku help
 Usage:
   tansaku crawl URL
 
 Options:
-  [--additional-list=ADDITIONAL_LIST]  # Path to the file which includes additional paths to crawl
-  [--headers=key:value]                # Headers to use
-  [--max-concurrent-requests=N]        # Number of concurrent requests to use
-  [--type=TYPE]                        # Type of a list to crawl (admin, backup, database, etc, log or all)
-                                       # Default: all
+  [--additional-list=ADDITIONAL_LIST]                              # Path to the file which includes additional paths to crawl
+  [--headers=key:value]                                            # HTTP headers to use
+  [--method=METHOD]                                                # HTTP method to use
+                                                                   # Default: HEAD
+  [--body=BODY]                                                    # HTTP request body to use
+  [--timeout=N]                                                    # Timeout in seconds
+  [--max-concurrent-requests=N]                                    # Max number of concurrent requests to use
+  [--ignore-certificate-errors], [--no-ignore-certificate-errors]  # Whether to ignore certificate errors or not
+  [--type=TYPE]                                                    # Type of a list to crawl (admin, backup, database, etc, log or all)
+                                                                   # Default: all
 
 Crawl a given URL
 ```
