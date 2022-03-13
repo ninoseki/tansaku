@@ -7,7 +7,7 @@ RSpec.shared_context "http_server" do
   def server
     server = Glint::Server.new do |port|
       http = WEBrick::HTTPServer.new(
-        BindAddress: "0.0.0.0",
+        BindAddress: "127.0.0.1",
         Port: port,
         Logger: WEBrick::Log.new(File.open(File::NULL, "w")),
         AccessLog: []
@@ -37,7 +37,7 @@ RSpec.shared_context "http_server" do
     end
 
     Glint::Server.info[:http_server] = {
-      host: "0.0.0.0",
+      host: "127.0.0.1",
       port: server.port
     }
     server
@@ -50,6 +50,6 @@ RSpec.shared_context "http_server" do
 
   after(:all) { @server.stop }
 
-  let(:host) { "0.0.0.0" }
+  let(:host) { "127.0.0.1" }
   let(:port) { @server.port }
 end
