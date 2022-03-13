@@ -31,12 +31,16 @@ module Tansaku
     # @return [String, nil]
     attr_reader :body
 
+    # @return [Float, nil]
+    attr_reader :timeout
+
     def initialize(
       base_uri,
       additional_list: nil,
       headers: {},
       method: "HEAD",
       body: nil,
+      timeout: nil,
       max_concurrent_requests: nil,
       type: "all"
     )
@@ -52,13 +56,16 @@ module Tansaku
       @headers = headers
       @body = body
 
+      @timeout = timeout.nil? ? nil : timeout.to_f
+
       @max_concurrent_requests = max_concurrent_requests || (Etc.nprocessors * 8)
       @type = type
     end
 
     def crawl
       results = {}
-      Async do
+
+      Async do |task|
         barrier = Async::Barrier.new
         semaphore = Async::Semaphore.new(max_concurrent_requests, parent: barrier)
         internet = Async::HTTP::Internet.new
@@ -67,20 +74,20 @@ module Tansaku
           semaphore.async do
             url = url_for(path)
 
-            res = internet.call(method, url, request_headers, body)
+            res = dispatch_http_request(task, internet, url)
+            next unless online?(res.status)
 
-            if online?(res.status)
-              log = [method, url, res.status].join(",")
-              Tansaku.logger.info(log)
+            log = [method, url, res.status].join(",")
+            Tansaku.logger.info(log)
 
-              results[url] = res.status
-            end
+            results[url] = res.status
           rescue Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, EOFError, OpenSSL::SSL::SSLError, Async::TimeoutError
             next
           end
         end
         barrier.wait
       end
+
       results
     end
 
@@ -121,6 +128,23 @@ module Tansaku
         upcase_keys = headers.keys.map(&:downcase).map(&:to_s)
         headers["user-agent"] = DEFAULT_USER_AGENT unless upcase_keys.include?("user-agent")
       end.compact
+    end
+
+    #
+    # Dispatch an HTTP request
+    #
+    # @param [Async::Task] task
+    # @param [Async::HTTP::Internet] internet
+    # @param [String] url
+    #
+    # @return [Async::HTTP::Protocol::Response]
+    #
+    def dispatch_http_request(task, internet, url)
+      return internet.call(method, url, request_headers, body) if timeout.nil?
+
+      task.with_timeout(timeout) do
+        internet.call(method, url, request_headers, body)
+      end
     end
   end
 end
