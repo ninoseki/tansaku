@@ -11,7 +11,7 @@ require "tansaku/monkey_patch"
 
 module Tansaku
   class Crawler
-    DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
+    DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
 
     # @return [String]
     attr_reader :base_uri
@@ -71,6 +71,8 @@ module Tansaku
     def crawl
       results = {}
 
+      log_conditions
+
       Async do |task|
         barrier = Async::Barrier.new
         semaphore = Async::Semaphore.new(max_concurrent_requests, parent: barrier)
@@ -99,6 +101,17 @@ module Tansaku
 
     private
 
+    def log_conditions
+      Tansaku.logger.info("Start crawling with the following conditions:")
+      Tansaku.logger.info("URLs: #{paths.length} URLs to crawl")
+      Tansaku.logger.info("Method: #{method}")
+      Tansaku.logger.info("Timeout: #{timeout || "nil"}")
+      Tansaku.logger.info("Headers: #{request_headers}")
+      Tansaku.logger.info("Body: #{body}")
+      Tansaku.logger.info("Ignore certificate errors: #{ignore_certificate_errors}")
+      Tansaku.logger.info("Concurrency: #{max_concurrent_requests} requests at max")
+    end
+
     def online?(status)
       [200, 204, 301, 302, 307, 401, 403].include? status.to_i
     end
@@ -118,9 +131,11 @@ module Tansaku
     end
 
     def paths
-      paths = Path.get_by_type(type)
-      paths += File.readlines(additional_list) if additional_list
-      paths.filter_map(&:chomp)
+      @paths ||= [].tap do |out|
+        paths = Path.get_by_type(type)
+        paths += File.readlines(additional_list) if additional_list
+        out << paths.filter_map(&:chomp)
+      end.flatten.uniq
     end
 
     def url_for(path)
