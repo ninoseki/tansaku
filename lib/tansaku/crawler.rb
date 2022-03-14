@@ -51,7 +51,7 @@ module Tansaku
       raise ArgumentError, "Invalid URI" unless valid_uri?
 
       @additional_list = additional_list
-      raise ArgumentError, "Invalid path" if !additional_list.nil? && !valid_path?
+      raise ArgumentError, "Invalid path" unless valid_additional_path?
 
       @method = method.upcase
       raise ArgumentError, "Invalid HTTP method" unless valid_method?
@@ -107,7 +107,9 @@ module Tansaku
       ["http", "https"].include? base_uri.scheme
     end
 
-    def valid_path?
+    def valid_additional_path?
+      return true if additional_list.nil?
+
       File.exist?(additional_list)
     end
 
@@ -117,7 +119,7 @@ module Tansaku
 
     def paths
       paths = Path.get_by_type(type)
-      paths += File.readlines(File.expand_path(additional_list, __dir__)) if additional_list
+      paths += File.readlines(additional_list) if additional_list
       paths.filter_map(&:chomp)
     end
 
